@@ -10,7 +10,7 @@ http.createServer(function (req, res) {
 			res.writeHead(404, { 'Content-Type': 'text/html' });
 			return res.end("404 Not Found");
 		}
-		res.writeHead(200, { 'Content-Type': 'text/html' });
+		res.writesHead(200, { 'Content-Type': 'text/html' });
 		res.write(data);
 		return res.end();
 	});
