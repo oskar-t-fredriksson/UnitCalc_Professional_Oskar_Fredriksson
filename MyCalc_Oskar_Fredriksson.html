@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <h1>UnitCalc Proffessional</h1>
+    <style>
+        html {
+            background: #252525;
+        }
+        h1 {
+            color: #fff;
+            transform: translate(480px, 100px);
+            font-family: Motserrat, sans-serif;
+        }
+
+        #entry {
+            background: white;
+            border: 4px solid;
+            width: 492px;
+            font-size: 30px;
+            transform: translate(1050px, -325px);
+            font-family: Motserrat, sans-serif;
+        }
+
+        input {
+            border: none;
+            outline: none;
+        }
+
+        td {
+            background-color: #a9a9a9;
+            border: 4px solid;
+            color: #252525;
+            font-family: Motserrat, sans-serif;
+        }
+
+        table {
+            position: absolute;
+            text-align: center;
+            font-size: 30px;
+            transform: translate(1050px, -350px);
+            width: 500px;
+            height: 250px;
+            position: center;
+        }
+
+        div#stack {
+            width: 28%;
+            font-size: 5rem;
+            border: none;
+            background-color: #252525;
+            color: #fff;
+            width: 580px;
+            height: 370px;
+            transform: translate(480px, 100px);
+            font-family: Motserrat, sans-serif;
+        }
+
+        td:hover {
+            background-color: #f0f8ff;
+        }
+
+        td:active, th:active {
+            background-color: #6495ed;
+        }
+    </style>
+    <script>
+        //Stack objekt
+        var stack = { T: 0, Z: 0, Y: 0, X: 0 };
+
+        //Entry
+        var entry = "";
+        var sgn = "";
+        function showEntry() {
+            var e = document.getElementById('entry');
+            e.innerHTML = sgn + entry + "_";
+        }
+
+        function concat(n) {
+            entry += n;
+            document.getElementById('entry').innerHTML = entry;
+        }
+        //Calcs X,Y,Z,T
+        function showStack() {
+
+            var stackValues = "";           
+            var S = document.getElementById('stack');
+            for (value in stack) {
+                stackValues += value + ": " + stack[value].toPrecision(5) + "<br>";
+            }
+            S.innerHTML = stackValues;
+        }
+        function push(newX) {
+            stack.T = stack.Z; stack.Z = stack.Y; stack.Y = stack.X; stack.X = newX;
+            showStack();
+        }
+        function concat(n) {
+            entry = entry + n;
+            showEntry();
+        }
+        function cle() {
+            entry = "";
+            showEntry();
+        }
+        function cls() {
+            stack.X = stack.Y = stack.Z = stack.T = 0;
+            showStack();
+        }
+        function enter() {
+            push(1 * (sgn + entry));
+            entry = "";
+            sgn = "";
+            showEntry();
+        }
+        function div() {
+            stack.X = stack.Y / stack.X; stack.Y = stack.Z; stack.Z = stack.T;
+            showStack();
+        }
+        function multi() {
+            stack.X = stack.Y * stack.X; stack.Y = stack.Z; stack.Z = stack.T;
+            showStack();
+        }
+        function sub() {
+            stack.X = stack.Y - stack.X; stack.Y = stack.Z; stack.Z = stack.T;
+            showStack();
+        }
+        function add() {
+            stack.X = stack.Y + stack.X; stack.Y = stack.Z; stack.Z = stack.T;
+            showStack();
+        }
+        function chs() {
+            if (sgn == "") {
+                sgn = "-";
+            }
+            else if (sgn == "-") {
+                sgn = "+";
+            }
+            else if (sgn == "+") {
+                sgn = "-";
+            }
+            showEntry();
+        }
+        function kp() {
+            var key = event.keyCode;
+            var debug = document.getElementById('debug');
+            debug.innerHTML = key;
+            //Keypad
+            switch (key) {
+                case 13:
+                    debug.innerHTML = "Enter";
+                    enter();
+                    break;
+                case 107:
+                    debug.innerHTML = "Add";
+                    add();
+                    break;
+                case 109:
+                    debug.innerHTML = "Sub";
+                    sub();
+                    break;
+                case 106:
+                    debug.innerHTML = "Multi";
+                    multi();
+                    break;
+                case 111:
+                    debug.innerHTML = "Divide";
+                    div();
+                    break;
+                case 27:
+                    debug.innerHTML = "Clear number";
+                    cle();
+                    break;
+                case 8:
+                    debug.innerHTML = "Clear stack";
+                    cls();
+                    break;
+                default:
+            }
+        }
+        function sin() {
+            stack.X = Math.sin(stack.X);
+            showStack();
+        }
+        function cos() {
+            stack.X = Math.cos(stack.X);
+            showStack();
+        }
+        function tan() {
+            stack.X = Math.tan(stack.X);
+            showStack();
+        }
+        function sqrt() {
+            stack.X = stack.X * stack.X;
+            showStack();
+        }
+    </script>
+</head>
+
+<body onkeydown="kp()">
+
+    <div id="stack"></div>
+    <script>
+        showStack();
+    </script>
+
+    <p id="entry">_</p>
+
+    <div id="keys">
+        <table>
+            <tr>
+                <td onclick="enter()" colspan="2">enter</td>
+                <td onclick="cle()">ce</td>
+                <td onclick="cls()">cs</td>
+            </tr>
+            <tr>
+                <td onclick="concat('7')">7</td>
+                <td onclick="concat('8')">8</td>
+                <td onclick="concat('9')">9</td>
+                <td onclick="div()">/</td>
+            </tr>
+            <tr>
+                <td onclick="concat('4')">4</td>
+                <td onclick="concat('5')">5</td>
+                <td onclick="concat('6')">6</td>
+                <td onclick="multi()">*</td>
+            </tr>
+            <tr>
+                <td onclick="concat('1')">1</td>
+                <td onclick="concat('2')">2</td>
+                <td onclick="concat('3')">3</td>
+                <td onclick="sub()">-</td>
+            </tr>
+            <tr>
+                <td onclick="chs()">+/-</td>
+                <td onclick="concat('0')">0</td>
+                <td onclick="concat('.')">.</td>
+                <td onclick="add()">+</td>
+            </tr>
+            <tr>
+                <td onclick="sin()">sin</td>
+                <td onclick="cos()">cos</td>
+                <td onclick="tan()">tan</td>
+                <td onclick="sqrt()">x^2</td>
+            </tr>
+            <tr>
+                <td onclick="save()">save</td>
+                <td onclick="load()">load</td>
+                <td onclick="newSave()">new</td>
+                <td onclick="deleteSave()">delete</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
